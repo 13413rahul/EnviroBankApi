@@ -43,12 +43,13 @@ public class BankAccountController {
         return new ResponseEntity<>(bankAccount1, httpHeaders, HttpStatus.CREATED);
     }
 
-    @PutMapping("/depositToDifferentAccounts")
-    public ResponseEntity<Transaction> depositMoney(@RequestBody BankAccount from, BankAccount to, TransferBalanceRequest transferBalanceRequest) {
-        bankAcountService.sendToDifferentAccount(from, to, transferBalanceRequest);
+    @PutMapping("/depositTome/{bankAccountId}")
+    public ResponseEntity<BankAccount> depositToSameAccount(@RequestBody TransferBalanceRequest transferBalanceRequest) {
+        bankAcountService.depositTome(transferBalanceRequest);
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("/", "/api/v1");
+        httpHeaders.add("/", "/api/v1" );
         return new ResponseEntity<>(httpHeaders, HttpStatus.CREATED);
     }
+
 
 }

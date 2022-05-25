@@ -13,9 +13,9 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class TransferBalanceRequest {
     private String fromAccountNumber;
-
     private String toAccountNumber;
-
+    private String toAccountType;
+    private String fromAccountType;
     private BigDecimal amount;
 
 }

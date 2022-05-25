@@ -1,10 +1,11 @@
 package com.enviro.mphathisi.Enviro.bank.models;
 
+import com.enviro.mphathisi.Enviro.bank.models.bank.Savings;
 import com.enviro.mphathisi.Enviro.bank.models.constants.AccountStatus;
-import com.enviro.mphathisi.Enviro.bank.models.constants.AccountType;
 import lombok.*;
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -22,8 +23,7 @@ public class BankAccount {
     Long bank_account_id;
     String accountNumber;
     @Column
-    @Enumerated(EnumType.STRING)
-    private AccountType accountType;
+    private String accountType;
     @Column
     @Enumerated(EnumType.STRING)
     private AccountStatus accountStatus;
