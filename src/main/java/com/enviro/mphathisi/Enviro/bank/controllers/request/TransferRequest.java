@@ -7,15 +7,13 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class TransferBalanceRequest {
-    private String fromAccountNumber;
-    private String toAccountNumber;
-    private String toAccountType;
-    private String fromAccountType;
-    private BigDecimal amount;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
+@Getter
+public class TransferRequest {
+    private String senderAccountNo;
+    private String receiverAccountNo;
+    private BigDecimal amount;
 }

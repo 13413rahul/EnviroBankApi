@@ -1,5 +1,6 @@
 package com.enviro.mphathisi.Enviro.bank.controllers;
 
+import com.enviro.mphathisi.Enviro.bank.controllers.request.PaymentRequest;
 import com.enviro.mphathisi.Enviro.bank.models.User;
 import com.enviro.mphathisi.Enviro.bank.services.IUserService;
 import org.springframework.http.HttpHeaders;
@@ -41,6 +42,9 @@ public class UserController {
         httpHeaders.add("/", "/api/v1" + user1.getUser_id());
         return new ResponseEntity<>(user1, httpHeaders, HttpStatus.CREATED);
     }
+    
+
+
 
 
 }

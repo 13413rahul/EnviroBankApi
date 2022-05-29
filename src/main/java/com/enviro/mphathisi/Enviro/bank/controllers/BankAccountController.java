@@ -2,10 +2,11 @@ package com.enviro.mphathisi.Enviro.bank.controllers;
 
 
 
-import com.enviro.mphathisi.Enviro.bank.controllers.request.TransferBalanceRequest;
+import com.enviro.mphathisi.Enviro.bank.controllers.request.AdminPaymentRequest;
+import com.enviro.mphathisi.Enviro.bank.controllers.request.PaymentRequest;
+import com.enviro.mphathisi.Enviro.bank.controllers.request.TransferRequest;
 import com.enviro.mphathisi.Enviro.bank.models.BankAccount;
-import com.enviro.mphathisi.Enviro.bank.models.Transaction;
-import com.enviro.mphathisi.Enviro.bank.models.User;
+import com.enviro.mphathisi.Enviro.bank.models.constants.AccountType;
 import com.enviro.mphathisi.Enviro.bank.services.BankAcountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -43,13 +44,20 @@ public class BankAccountController {
         return new ResponseEntity<>(bankAccount1, httpHeaders, HttpStatus.CREATED);
     }
 
-    @PutMapping("/depositTome/{bankAccountId}")
-    public ResponseEntity<BankAccount> depositToSameAccount(@RequestBody TransferBalanceRequest transferBalanceRequest) {
-        bankAcountService.depositTome(transferBalanceRequest);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("/", "/api/v1" );
-        return new ResponseEntity<>(httpHeaders, HttpStatus.CREATED);
+    @PostMapping("/deposit")
+    public void sendSomeFunds(@RequestBody TransferRequest transferRequest){
+        bankAcountService.deposit(transferRequest.getSenderAccountNo() , transferRequest.getReceiverAccountNo(),
+                transferRequest.getAmount());
     }
+    //transfer to same user account
+    @PostMapping("/transfer")
+    public  void transfer(@RequestBody PaymentRequest paymentRequest){
+        bankAcountService.transferTo(paymentRequest.getSenderAccountNo(), paymentRequest.getReceiverAccountNo(),
+                    paymentRequest.getAmount() , paymentRequest.getFrom(), paymentRequest.getTo());
+    }
+
+
+
 
 
 }

@@ -10,5 +10,7 @@ public interface IUserService {
     public User getUserById(Long id);
     public User findByUserName(String username);
 
+   //a method to link users
+
 
 }

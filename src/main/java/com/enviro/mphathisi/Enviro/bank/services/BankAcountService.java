@@ -1,11 +1,6 @@
 package com.enviro.mphathisi.Enviro.bank.services;
-import com.enviro.mphathisi.Enviro.bank.controllers.request.TransferBalanceRequest;
 import com.enviro.mphathisi.Enviro.bank.models.BankAccount;
-import com.enviro.mphathisi.Enviro.bank.models.Transaction;
-import com.enviro.mphathisi.Enviro.bank.models.bank.Cheque;
-import com.enviro.mphathisi.Enviro.bank.models.bank.Credit;
-import com.enviro.mphathisi.Enviro.bank.models.bank.Recipient;
-import com.enviro.mphathisi.Enviro.bank.models.bank.Savings;
+import com.enviro.mphathisi.Enviro.bank.models.constants.AccountType;
 
 
 import java.math.BigDecimal;
@@ -18,7 +13,7 @@ public interface BankAcountService {
 
     public BankAccount getAccountById(Long id);
 
-    void toSomeoneElseTransfer(TransferBalanceRequest transferBalanceRequest);
+    void deposit(String senderAccountNo ,String receiverAccountNO, BigDecimal amount);
+    void transferTo(String sederAccountNo, String receiverAccountNo, BigDecimal amount, String from , String to);
 
-    void depositTome(TransferBalanceRequest transferBalanceRequest);
 }

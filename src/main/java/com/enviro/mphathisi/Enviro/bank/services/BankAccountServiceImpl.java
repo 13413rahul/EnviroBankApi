@@ -1,13 +1,11 @@
 package com.enviro.mphathisi.Enviro.bank.services;
 
-import com.enviro.mphathisi.Enviro.bank.controllers.request.TransferBalanceRequest;
 import com.enviro.mphathisi.Enviro.bank.models.BankAccount;
-import com.enviro.mphathisi.Enviro.bank.models.bank.*;
-import com.enviro.mphathisi.Enviro.bank.models.bank.repo.CreditRepository;
+
 import com.enviro.mphathisi.Enviro.bank.models.constants.AccountStatus;
+import com.enviro.mphathisi.Enviro.bank.models.constants.AccountType;
 import com.enviro.mphathisi.Enviro.bank.repository.BankAccountRepository;
-import com.enviro.mphathisi.Enviro.bank.repository.ChequeRepository;
-import com.enviro.mphathisi.Enviro.bank.repository.SavingsRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,21 +13,14 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
+import java.util.zip.DataFormatException;
+
 
 @Service
 public class BankAccountServiceImpl implements BankAcountService{
     @Autowired
     BankAccountRepository bankAccountRepository;
 
-    @Autowired
-    SavingsRepository savingsRepository;
-
-    @Autowired
-    ChequeRepository chequeRepository;
-
-    @Autowired
-    CreditRepository creditRepository;
 
 
     @Override
@@ -45,7 +36,6 @@ public class BankAccountServiceImpl implements BankAcountService{
         }
 
         //this is not working yet
-
         bankAccount.setLatestBalance(bankAccount.getAvailableBalance());
         return bankAccountRepository.save(bankAccount);
     }
@@ -62,47 +52,59 @@ public class BankAccountServiceImpl implements BankAcountService{
         return bankAccountRepository.findById(id).get();
     }
 
-
     @Override
-    public void toSomeoneElseTransfer(TransferBalanceRequest transferBalanceRequest) {
+    public void deposit(String senderAccountNo, String receiverAccountNo, BigDecimal amount) {
+        //sending  between accounts
+        BankAccount sender = bankAccountRepository.findByAccountNumber(senderAccountNo);
+        BankAccount receiver = bankAccountRepository.findByAccountNumber(receiverAccountNo);
+        System.out.println("Sender available balance:"+sender.getAvailableBalance());
+        System.out.println("Receiver balance:"+receiver.getAvailableBalance());
 
+        Date date = new  Date();
+        Long time =  date.getTime();
+        System.out.println(time);
+
+        //implement time delay
+
+        BigDecimal senderAmount = sender.getAvailableBalance().subtract(amount);
+        sender.setAvailableBalance(senderAmount);
+        System.out.println("Sender left with:" + sender.getAvailableBalance());
+        BigDecimal receiverAmount = receiver.getAvailableBalance().add(amount);
+        receiver.setAvailableBalance(receiverAmount);
+        receiver.setLatestBalance(receiverAmount);
+        System.out.println("Receiver have " + receiver.getAvailableBalance());
+        bankAccountRepository.save(sender);
+        bankAccountRepository.save(receiver);
     }
 
     @Override
-    public void depositTome(TransferBalanceRequest transferBalanceRequest) {
-        BankAccount bankAccount = new BankAccount();
+    public void transferTo(String sederAccountNo, String receiverAccountNo, BigDecimal amount, String from ,String to) {
+        if(from.equals(AccountType.SAVINGS.toString()) && to.equals(AccountType.CREDIT.toString())){
+            BankAccount sender = bankAccountRepository.findByAccountNumber(sederAccountNo);
+            BankAccount receiver = bankAccountRepository.findByAccountNumber(receiverAccountNo);
+            System.out.println("Sender available balance:"+sender.getAvailableBalance());
+            System.out.println("Receiver balance:"+receiver.getAvailableBalance());
 
-        String toAccountType = transferBalanceRequest.getToAccountType();
-        String fromAccountType = transferBalanceRequest.getFromAccountType();
+            BigDecimal senderAmount = sender.getAvailableBalance().subtract(amount);
+            sender.setAvailableBalance(senderAmount);
+            System.out.println("Sender left with:" + sender.getAvailableBalance());
+            BigDecimal receiverAmount = receiver.getAvailableBalance().add(amount);
 
-            Savings savings = new Savings();
-            Credit credit = new Credit();
-
-            BigDecimal initialDeposit = new BigDecimal(200);
-            savings.setAccountBalance(initialDeposit);
-            savingsRepository.save(savings);
-            credit.setAccountBalance(initialDeposit);
-            creditRepository.save(credit);
-
-        if(Objects.equals(toAccountType, "Credit") && Objects.equals(fromAccountType ,"Savings")){
-          BigDecimal subtract =   savings.getAccountBalance().subtract(transferBalanceRequest.getAmount());
-          savings.setAccountBalance(subtract);
-          savingsRepository.save(savings);
-          BigDecimal add = credit.getAccountBalance().add(transferBalanceRequest.getAmount());
-          credit.setAccountBalance(add);
-          creditRepository.save(credit);
-
-           bankAccount.setAccountType("Credit");
-           bankAccount.setAvailableBalance(credit.getAccountBalance());
-           System.out.println("bank account"+bankAccount.getAvailableBalance());
-
-            System.out.println("take from savings and add to credit account");
-            System.out.println("Saving left with :"+savings.getAccountBalance());
-            System.out.println("Credit has new Balance of : "+credit.getAccountBalance());
-
+             Date date = new  Date();
+             Long time =  date.getTime();
+             System.out.println(time);
+            receiver.setAvailableBalance(receiverAmount);
+            receiver.setLatestBalance(receiverAmount);
+            System.out.println("Receiver have " + receiver.getAvailableBalance());
+            bankAccountRepository.save(sender);
+            bankAccountRepository.save(receiver);
+        }
+        else {
+            System.out.println("wrong selection");
         }
 
-
     }
+
+
 
 }
