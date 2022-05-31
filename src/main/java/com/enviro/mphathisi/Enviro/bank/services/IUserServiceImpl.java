@@ -1,6 +1,8 @@
 package com.enviro.mphathisi.Enviro.bank.services;
 
+import com.enviro.mphathisi.Enviro.bank.models.BankAccount;
 import com.enviro.mphathisi.Enviro.bank.models.User;
+import com.enviro.mphathisi.Enviro.bank.repository.BankAccountRepository;
 import com.enviro.mphathisi.Enviro.bank.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,8 @@ public class IUserServiceImpl implements IUserService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    BankAccountRepository bankAccountRepository;
     @Override
     public User create(User user) {
         return userRepository.save(user);
@@ -28,4 +32,16 @@ public class IUserServiceImpl implements IUserService {
     public User getUserById(Long id) {
         return userRepository.findById(id).get();
     }
+
+    @Override
+    public User findByUserName(String username) {
+        return userRepository.getUserByUsername(username);
+    }
+
+
+
+
+
+
+
 }

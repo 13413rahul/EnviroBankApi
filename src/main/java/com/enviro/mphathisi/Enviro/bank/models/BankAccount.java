@@ -5,7 +5,6 @@ import com.enviro.mphathisi.Enviro.bank.models.constants.AccountType;
 import lombok.*;
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.List;
 
 @Entity
 @Setter
@@ -31,9 +30,6 @@ public class BankAccount {
     BigDecimal availableBalance;
     @Column
     BigDecimal latestBalance;
-
-    @OneToMany(mappedBy = "bankAccount")
-    private List<Transaction> transactionList;
 
 
 }

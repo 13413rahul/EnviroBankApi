@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BankAccountRepository extends CrudRepository<BankAccount,Long> {
-    AccountType findByAccountType(AccountType accountType);
     BankAccount findByAccountNumber(String accountNumber);
+    BankAccount findByAccountType(AccountType accountType);
 }

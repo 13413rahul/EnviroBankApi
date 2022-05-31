@@ -1,21 +1,27 @@
 package com.enviro.mphathisi.Enviro.bank.services;
 
-import com.enviro.mphathisi.Enviro.bank.controllers.request.TransferBalanceRequest;
 import com.enviro.mphathisi.Enviro.bank.models.BankAccount;
-import com.enviro.mphathisi.Enviro.bank.models.Transaction;
+
 import com.enviro.mphathisi.Enviro.bank.models.constants.AccountStatus;
+import com.enviro.mphathisi.Enviro.bank.models.constants.AccountType;
 import com.enviro.mphathisi.Enviro.bank.repository.BankAccountRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.zip.DataFormatException;
+
 
 @Service
 public class BankAccountServiceImpl implements BankAcountService{
     @Autowired
     BankAccountRepository bankAccountRepository;
+
+
 
     @Override
     public BankAccount create(BankAccount bankAccount) {
@@ -30,7 +36,6 @@ public class BankAccountServiceImpl implements BankAcountService{
         }
 
         //this is not working yet
-
         bankAccount.setLatestBalance(bankAccount.getAvailableBalance());
         return bankAccountRepository.save(bankAccount);
     }
@@ -48,30 +53,58 @@ public class BankAccountServiceImpl implements BankAcountService{
     }
 
     @Override
-    public void deposit(Long id,  BankAccount bankAccount) {
-        BankAccount bankAccount1 = bankAccountRepository.findById(id).get();
-        bankAccountRepository.findByAccountNumber(bankAccount1.getAccountNumber());
-        bankAccountRepository.findByAccountType(bankAccount1.getAccountType());
-        bankAccount1.setAvailableBalance(bankAccount.getAvailableBalance());
-        bankAccountRepository.save(bankAccount1);
+    public void deposit(String senderAccountNo, String receiverAccountNo, BigDecimal amount) {
+        //sending  between accounts
+        BankAccount sender = bankAccountRepository.findByAccountNumber(senderAccountNo);
+        BankAccount receiver = bankAccountRepository.findByAccountNumber(receiverAccountNo);
+        System.out.println("Sender available balance:"+sender.getAvailableBalance());
+        System.out.println("Receiver balance:"+receiver.getAvailableBalance());
 
+        Date date = new  Date();
+        Long time =  date.getTime();
+        System.out.println(time);
+
+        //implement time delay
+
+        BigDecimal senderAmount = sender.getAvailableBalance().subtract(amount);
+        sender.setAvailableBalance(senderAmount);
+        System.out.println("Sender left with:" + sender.getAvailableBalance());
+        BigDecimal receiverAmount = receiver.getAvailableBalance().add(amount);
+        receiver.setAvailableBalance(receiverAmount);
+        receiver.setLatestBalance(receiverAmount);
+        System.out.println("Receiver have " + receiver.getAvailableBalance());
+        bankAccountRepository.save(sender);
+        bankAccountRepository.save(receiver);
     }
 
     @Override
-    public void sendToDifferentAccount(BankAccount from, BankAccount to, TransferBalanceRequest transferBalanceRequest) {
-        from.setAccountNumber(transferBalanceRequest.getFromAccountNumber());
-        to.setAccountNumber(transferBalanceRequest.getToAccountNumber());
-       // BigDecimal take = from.getAvailableBalance().subtract(transferBalanceRequest.getAmount());
-       // BigDecimal  add = to.getAvailableBalance().add(transferBalanceRequest.getAmount());
-        //from.setAvailableBalance(take);
-       // to.setAvailableBalance(add);
-        System.out.println(from.getAvailableBalance());
-        System.out.println(to.getAvailableBalance());
-        //let me try to send to different accounts
-        //and then same account
-        // implement email send
-        // host
-       // bankAccountRepository.save(from);
+    public void transferTo(String sederAccountNo, String receiverAccountNo, BigDecimal amount, String from ,String to) {
+        if(from.equals(AccountType.SAVINGS.toString()) && to.equals(AccountType.CREDIT.toString())){
+            BankAccount sender = bankAccountRepository.findByAccountNumber(sederAccountNo);
+            BankAccount receiver = bankAccountRepository.findByAccountNumber(receiverAccountNo);
+            System.out.println("Sender available balance:"+sender.getAvailableBalance());
+            System.out.println("Receiver balance:"+receiver.getAvailableBalance());
+
+            BigDecimal senderAmount = sender.getAvailableBalance().subtract(amount);
+            sender.setAvailableBalance(senderAmount);
+            System.out.println("Sender left with:" + sender.getAvailableBalance());
+            BigDecimal receiverAmount = receiver.getAvailableBalance().add(amount);
+
+             Date date = new  Date();
+             Long time =  date.getTime();
+             System.out.println(time);
+            receiver.setAvailableBalance(receiverAmount);
+            receiver.setLatestBalance(receiverAmount);
+            System.out.println("Receiver have " + receiver.getAvailableBalance());
+            bankAccountRepository.save(sender);
+            bankAccountRepository.save(receiver);
+        }
+        else {
+            System.out.println("wrong selection");
+        }
+
     }
+
+
 
 }

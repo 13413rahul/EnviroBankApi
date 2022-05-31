@@ -1,5 +1,6 @@
 package com.enviro.mphathisi.Enviro.bank.controllers;
 
+import com.enviro.mphathisi.Enviro.bank.controllers.request.PaymentRequest;
 import com.enviro.mphathisi.Enviro.bank.models.User;
 import com.enviro.mphathisi.Enviro.bank.services.IUserService;
 import com.enviro.mphathisi.Enviro.bank.services.notification.EmailNotification;
@@ -35,6 +36,11 @@ public class UserController {
         return new ResponseEntity<>(iUserService.getUserById(userId), HttpStatus.OK);
     }
 
+    @GetMapping({"/{username}"})
+    public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
+        return new ResponseEntity<>(iUserService.findByUserName(username), HttpStatus.OK);
+    }
+
     @PostMapping("/register")
     public ResponseEntity<User> saveNewUser(@RequestBody User user) {
 
@@ -57,6 +63,9 @@ public class UserController {
         }
         return new ResponseEntity<>(user1, httpHeaders, HttpStatus.CREATED);
     }
+    
+
+
 
 
 }

@@ -8,6 +8,9 @@ public interface IUserService {
     public User create(User user);
     public List<User> users();
     public User getUserById(Long id);
+    public User findByUserName(String username);
+
+   //a method to link users
 
 
 }
